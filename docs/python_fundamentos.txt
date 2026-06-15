@@ -1,0 +1,236 @@
+PYTHON FUNDAMENTOS — GUIA COMPLETO
+====================================
+
+## 1. O que é Python?
+
+Python é uma linguagem de programação de alto nível, interpretada, de propósito geral e com tipagem dinâmica. Criada por Guido van Rossum em 1991, é conhecida por sua sintaxe limpa e legível, que se assemelha ao pseudocódigo. É amplamente usada em ciência de dados, inteligência artificial, automação, desenvolvimento web e muito mais.
+
+## 2. Variáveis e Tipos de Dados
+
+Em Python, não é necessário declarar o tipo de uma variável — ele é inferido automaticamente.
+
+Tipos primitivos:
+- int: números inteiros (ex: 42, -7)
+- float: números decimais (ex: 3.14, -0.5)
+- str: texto/string (ex: "Olá, mundo!")
+- bool: booleano (True ou False)
+- NoneType: ausência de valor (None)
+
+Exemplos:
+  nome = "Maria"
+  idade = 25
+  altura = 1.65
+  ativo = True
+  sem_valor = None
+
+## 3. Listas vs Tuplas vs Conjuntos vs Dicionários
+
+Listas (list):
+- São mutáveis (podem ser alteradas após a criação)
+- Permitem duplicatas
+- Indexadas por posição (começa em 0)
+- Sintaxe: [1, 2, 3]
+- Uso: quando a ordem importa e os dados mudam
+
+Tuplas (tuple):
+- São imutáveis (não podem ser alteradas após a criação)
+- Permitem duplicatas
+- Mais rápidas que listas para leitura
+- Sintaxe: (1, 2, 3)
+- Uso: dados que não devem mudar, como coordenadas
+
+Conjuntos (set):
+- Não permitem duplicatas
+- Não têm ordem garantida
+- Úteis para verificar pertencimento rapidamente
+- Sintaxe: {1, 2, 3}
+- Uso: eliminar duplicatas, operações de conjuntos (união, interseção)
+
+Dicionários (dict):
+- Pares chave-valor
+- Mutáveis
+- Chaves devem ser únicas e imutáveis
+- Sintaxe: {"chave": "valor"}
+- Uso: estruturar dados com rótulos, JSON
+
+## 4. Funções em Python
+
+Funções são blocos de código reutilizáveis definidos com a palavra-chave `def`.
+
+Sintaxe básica:
+  def saudar(nome):
+      return f"Olá, {nome}!"
+
+Funções com valores padrão:
+  def potencia(base, expoente=2):
+      return base ** expoente
+
+Funções com número variável de argumentos:
+  def somar(*numeros):
+      return sum(numeros)
+
+  def criar_perfil(**kwargs):
+      return kwargs
+
+Funções lambda (anônimas):
+  dobrar = lambda x: x * 2
+  quadrado = lambda x: x ** 2
+
+## 5. Programação Orientada a Objetos (POO)
+
+Classes são moldes para criar objetos. Em Python, tudo é um objeto.
+
+Conceitos principais:
+- Classe: molde/template
+- Objeto/Instância: cópia criada a partir da classe
+- Atributo: propriedade do objeto
+- Método: função pertencente à classe
+- self: referência ao próprio objeto
+
+Exemplo:
+  class Animal:
+      def __init__(self, nome, especie):
+          self.nome = nome
+          self.especie = especie
+
+      def apresentar(self):
+          return f"Eu sou {self.nome}, um(a) {self.especie}"
+
+  class Cachorro(Animal):
+      def latir(self):
+          return "Au au!"
+
+Os quatro pilares da POO:
+1. Encapsulamento: ocultar detalhes internos
+2. Herança: uma classe herda atributos de outra
+3. Polimorfismo: mesmo método, comportamentos diferentes
+4. Abstração: simplificar complexidade
+
+## 6. Tratamento de Erros (Exceções)
+
+Python usa blocos try/except para tratar erros sem quebrar o programa.
+
+  try:
+      resultado = 10 / 0
+  except ZeroDivisionError:
+      print("Erro: divisão por zero!")
+  except Exception as e:
+      print(f"Erro inesperado: {e}")
+  else:
+      print("Deu certo!")
+  finally:
+      print("Sempre executa")
+
+Exceções comuns:
+- TypeError: tipo errado
+- ValueError: valor inválido
+- IndexError: índice fora do range
+- KeyError: chave não encontrada no dicionário
+- FileNotFoundError: arquivo não existe
+
+## 7. Comprehensions
+
+Comprehensions são formas concisas de criar coleções.
+
+List comprehension:
+  quadrados = [x**2 for x in range(10)]
+  pares = [x for x in range(20) if x % 2 == 0]
+
+Dict comprehension:
+  mapa = {palavra: len(palavra) for palavra in ["python", "ia", "rag"]}
+
+Set comprehension:
+  unicos = {x % 5 for x in range(20)}
+
+Generator expression (memória eficiente):
+  total = sum(x**2 for x in range(1000000))
+
+## 8. Módulos e Pacotes
+
+Módulo: arquivo .py com funções, classes e variáveis
+Pacote: pasta com múltiplos módulos e um arquivo __init__.py
+
+Importação:
+  import math
+  from math import sqrt, pi
+  import numpy as np          # alias
+  from os.path import join    # função específica
+
+Instalação de pacotes externos:
+  pip install numpy pandas scikit-learn
+
+## 9. Ambientes Virtuais
+
+Ambientes virtuais isolam dependências de cada projeto.
+
+  python -m venv venv          # criar
+  source venv/bin/activate     # ativar no Mac/Linux
+  venv\Scripts\activate        # ativar no Windows
+  pip install -r requirements.txt
+  deactivate                   # desativar
+
+Por que usar? Evita conflitos de versões entre projetos diferentes.
+
+## 10. Decoradores
+
+Decoradores modificam o comportamento de funções sem alterá-las.
+
+  def meu_decorador(func):
+      def wrapper(*args, **kwargs):
+          print("Antes da função")
+          resultado = func(*args, **kwargs)
+          print("Depois da função")
+          return resultado
+      return wrapper
+
+  @meu_decorador
+  def saudar():
+      print("Olá!")
+
+Decoradores comuns do Python:
+- @staticmethod: método sem acesso ao objeto
+- @classmethod: método acessa a classe, não o objeto
+- @property: acessa atributo como propriedade
+- @functools.cache: memoriza resultados (memoização)
+
+## 11. Manipulação de Arquivos
+
+  # Leitura
+  with open("arquivo.txt", "r", encoding="utf-8") as f:
+      conteudo = f.read()
+
+  # Escrita
+  with open("saida.txt", "w", encoding="utf-8") as f:
+      f.write("Olá, arquivo!")
+
+  # JSON
+  import json
+  with open("dados.json", "r") as f:
+      dados = json.load(f)
+
+O `with` garante que o arquivo seja fechado automaticamente.
+
+## 12. Principais Bibliotecas para IA/ML
+
+- numpy: operações matemáticas e vetoriais
+- pandas: manipulação de dados tabulares (DataFrames)
+- matplotlib / seaborn: visualização de dados
+- scikit-learn: machine learning clássico
+- torch (PyTorch): deep learning
+- tensorflow / keras: deep learning (Google)
+- langchain: construção de pipelines com LLMs
+- streamlit: interfaces web simples para ML
+
+## 13. Dicas de Boas Práticas
+
+- Use nomes descritivos para variáveis e funções
+- Siga a PEP 8 (guia de estilo oficial do Python)
+- Prefira funções pequenas e com uma única responsabilidade
+- Use type hints para documentar tipos esperados
+- Escreva testes unitários com pytest
+- Use docstrings para documentar funções e classes
+- Evite variáveis globais
+
+Exemplo com type hints:
+  def calcular_media(numeros: list[float]) -> float:
+      return sum(numeros) / len(numeros)

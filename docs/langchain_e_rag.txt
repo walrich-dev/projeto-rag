@@ -1,0 +1,347 @@
+LANGCHAIN E RAG — CONSTRUINDO SISTEMAS INTELIGENTES
+=====================================================
+
+## 1. O que é RAG?
+
+RAG (Retrieval-Augmented Generation) é uma técnica que combina busca em base de conhecimento com geração de texto por LLMs. Em vez de depender apenas do conhecimento interno do modelo, o RAG busca informações relevantes em documentos externos e as injeta no contexto antes de gerar a resposta.
+
+Problema que o RAG resolve:
+- LLMs têm conhecimento limitado ao seu dados de treino (corte de conhecimento)
+- LLMs podem "alucinar" — inventar informações falsas com confiança
+- Empresas precisam de respostas baseadas em documentos internos e proprietários
+- Dados mudam constantemente e retreinar o modelo é inviável
+
+Vantagens do RAG:
+- Respostas sempre atualizadas (basta atualizar os documentos)
+- Cita as fontes da resposta (rastreabilidade)
+- Reduz significativamente alucinações
+- Sem necessidade de fine-tuning (mais barato)
+- Funciona com qualquer LLM
+
+## 2. Arquitetura do Pipeline RAG
+
+O pipeline RAG tem duas fases principais:
+
+### Fase de Indexação (Offline — feita uma vez):
+1. Carregamento dos documentos (PDFs, TXTs, sites, etc.)
+2. Divisão em chunks menores (chunking)
+3. Geração de embeddings para cada chunk
+4. Armazenamento em um banco de dados vetorial (vectorstore)
+
+### Fase de Consulta (Online — para cada pergunta):
+1. Usuário faz uma pergunta
+2. A pergunta é convertida em embedding
+3. Os chunks mais similares são recuperados do vectorstore
+4. Os chunks + a pergunta são enviados ao LLM
+5. O LLM gera a resposta com base no contexto fornecido
+
+## 3. Chunking — Divisão de Documentos
+
+Chunking é o processo de dividir documentos longos em pedaços menores que caibam na janela de contexto do LLM.
+
+Parâmetros importantes:
+- chunk_size: tamanho máximo de cada chunk (em caracteres ou tokens)
+  - Muito grande: perde precisão na busca
+  - Muito pequeno: perde contexto na resposta
+  - Valor típico: 500-1000 caracteres
+
+- chunk_overlap: sobreposição entre chunks consecutivos
+  - Evita perder informação na "costura" entre chunks
+  - Valor típico: 10-15% do chunk_size (50-100 caracteres)
+
+Estratégias de chunking:
+- Fixed-size: divide a cada N caracteres (simples mas pode cortar no meio de frases)
+- Recursive: divide por separadores hierárquicos (\n\n, \n, . , " ")
+- Semantic: divide por unidades de significado (parágrafos, seções)
+- Document-specific: respeita a estrutura do documento (ex: markdown por seções)
+
+RecursiveCharacterTextSplitter (mais recomendado):
+  from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+  splitter = RecursiveCharacterTextSplitter(
+      chunk_size=600,
+      chunk_overlap=80,
+      separators=["\n\n", "\n", ".", " ", ""]
+  )
+
+## 4. Embeddings e Vectorstores
+
+### O que são Embeddings?
+Embeddings convertem texto em vetores numéricos. Textos semanticamente similares ficam próximos no espaço vetorial.
+
+Modelos de embedding recomendados:
+- Gratuito/Local: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  - Funciona bem em português
+  - Roda no CPU
+  - Boa qualidade para documentos BR
+
+- Pago/API: text-embedding-3-small (OpenAI)
+  - Muito boa qualidade
+  - R$0.02 por 1M tokens
+  - Requer API key
+
+### Vectorstores (Bancos de Dados Vetoriais)
+
+Armazenam embeddings e permitem busca por similaridade eficientemente.
+
+Opções populares:
+- ChromaDB: gratuito, local, fácil de usar, perfeito para projetos pequenos/médios
+- FAISS (Facebook AI): gratuito, muito rápido, requer mais configuração
+- Pinecone: pago, gerenciado, escala para produção
+- Weaviate: open-source, com interface GraphQL
+- Qdrant: alta performance, open-source
+- pgvector: extensão do PostgreSQL, ideal se já usa o banco
+
+Para projetos de estudo e protótipos: ChromaDB é a melhor escolha.
+
+Criando um vectorstore com ChromaDB:
+  from langchain_community.embeddings import HuggingFaceEmbeddings
+  from langchain_community.vectorstores import Chroma
+
+  embeddings = HuggingFaceEmbeddings(
+      model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  )
+
+  db = Chroma.from_documents(
+      documents=chunks,
+      embedding=embeddings,
+      persist_directory="chroma_db/"
+  )
+
+## 5. Tipos de Busca Vetorial
+
+### Similarity Search
+- Retorna os K documentos mais similares à query
+- Usa distância cosseno ou produto interno
+- Pode retornar documentos redundantes
+
+### MMR (Maximal Marginal Relevance)
+- Balanceia relevância com diversidade
+- Evita retornar 5 chunks quase idênticos
+- Parâmetro lambda_mult controla o trade-off
+- Recomendado para respostas mais ricas
+
+### Similarity Score Threshold
+- Retorna apenas documentos acima de um threshold de similaridade
+- Evita usar documentos pouco relevantes
+
+## 6. LangChain — Framework para LLM Applications
+
+LangChain é um framework Python (e JavaScript) para construir aplicações com LLMs. Oferece abstrações para conectar modelos, dados e ferramentas.
+
+Componentes principais:
+
+### Models: interfaces unificadas para diferentes LLMs
+  from langchain_community.llms import Ollama
+  from langchain_anthropic import ChatAnthropic
+  from langchain_openai import ChatOpenAI
+
+  # Ollama (local, gratuito)
+  llm = Ollama(model="llama3.1", temperature=0)
+
+  # Claude (Anthropic)
+  llm = ChatAnthropic(model="claude-haiku-4-5-20251001")
+
+  # OpenAI
+  llm = ChatOpenAI(model="gpt-4o-mini")
+
+### Prompts: templates para formatar prompts
+  from langchain.prompts import PromptTemplate, ChatPromptTemplate
+
+  template = PromptTemplate(
+      input_variables=["contexto", "pergunta"],
+      template="Contexto: {contexto}\n\nPergunta: {pergunta}\nResposta:"
+  )
+
+### Chains: sequências de operações
+  from langchain.chains import RetrievalQA
+
+  chain = RetrievalQA.from_chain_type(
+      llm=llm,
+      retriever=retriever,
+      return_source_documents=True
+  )
+
+### LCEL (LangChain Expression Language):
+  # Forma moderna e recomendada de construir chains
+  chain = prompt | llm | output_parser
+
+### Memory: manter histórico de conversa
+  from langchain.memory import ConversationBufferMemory
+
+  memory = ConversationBufferMemory(
+      memory_key="historico",
+      return_messages=True
+  )
+
+### Agents: LLMs que usam ferramentas autonomamente
+  from langchain.agents import AgentExecutor, create_react_agent
+
+## 7. Construindo um Chain RAG Completo
+
+  from langchain.chains import RetrievalQA
+  from langchain.prompts import PromptTemplate
+  from langchain_community.llms import Ollama
+
+  PROMPT = PromptTemplate(
+      input_variables=["context", "question"],
+      template="""Você é um assistente especialista.
+  Use APENAS o contexto abaixo para responder.
+  Se não souber, diga "não encontrei essa informação".
+
+  Contexto:
+  {context}
+
+  Pergunta: {question}
+  Resposta:"""
+  )
+
+  def criar_chain(vectorstore):
+      llm = Ollama(model="llama3.1", temperature=0)
+      retriever = vectorstore.as_retriever(
+          search_kwargs={"k": 4}
+      )
+      return RetrievalQA.from_chain_type(
+          llm=llm,
+          retriever=retriever,
+          return_source_documents=True,
+          chain_type_kwargs={"prompt": PROMPT}
+      )
+
+## 8. Engenharia de Prompt para RAG
+
+### Instruções claras de grounding:
+- "Use APENAS o contexto fornecido"
+- "Se a resposta não estiver no contexto, diga que não sabe"
+- Evita que o modelo "invente" baseado no conhecimento interno
+
+### Formatação da resposta:
+- "Responda em tópicos"
+- "Seja conciso, máximo 3 parágrafos"
+- "Cite a fonte ao final"
+
+### Idioma:
+- "Responda sempre em português"
+- Importante para bases em português
+
+### Persona/Contexto:
+- "Você é um assistente especializado em [área]"
+- Melhora a qualidade e o tom das respostas
+
+## 9. Estratégias Avançadas de RAG
+
+### HyDE (Hypothetical Document Embeddings)
+- Gera um documento hipotético como resposta
+- Usa o embedding desse documento para busca
+- Melhora a relevância dos chunks encontrados
+
+### Parent Document Retriever
+- Armazena chunks pequenos (para busca precisa)
+- Mas retorna o documento pai maior (para contexto rico)
+
+### Self-Query Retriever
+- O LLM extrai metadados para filtrar a busca
+- "Encontre artigos sobre Python escritos em 2024"
+
+### Reranking
+- Um modelo menor reordena os chunks por relevância
+- Cross-encoder é mais preciso que bi-encoder para ranqueamento
+
+### RAG Fusion
+- Gera múltiplas variações da query
+- Combina os resultados de todas as buscas
+
+### RAGAS — Avaliação Automática de RAG
+Framework para avaliar pipelines RAG:
+- Faithfulness: a resposta é fiel ao contexto?
+- Answer Relevancy: a resposta é relevante à pergunta?
+- Context Precision: os chunks recuperados são relevantes?
+- Context Recall: todos os chunks necessários foram recuperados?
+
+## 10. Streamlit — Interface Web Rápida
+
+Streamlit é um framework Python para criar interfaces web interativas sem conhecimento de HTML/CSS/JavaScript.
+
+Instalação:
+  pip install streamlit
+
+Elementos principais:
+  import streamlit as st
+
+  # Configuração da página
+  st.set_page_config(page_title="Meu App", page_icon="🤖")
+
+  # Título e texto
+  st.title("Título")
+  st.write("Texto normal")
+  st.markdown("**Texto em negrito**")
+
+  # Input do usuário
+  texto = st.text_input("Digite algo")
+  numero = st.slider("Escolha um número", 0, 100, 50)
+
+  # Cache para não recarregar recursos a cada interação
+  @st.cache_resource
+  def carregar_modelo():
+      return meu_modelo_pesado()
+
+  # Chat interface
+  if prompt := st.chat_input("Sua pergunta..."):
+      with st.chat_message("user"):
+          st.write(prompt)
+      with st.chat_message("assistant"):
+          st.write(resposta)
+
+  # Executar: streamlit run app.py
+
+## 11. Deploy Gratuito — Streamlit Community Cloud
+
+1. Faça push do projeto para um repositório GitHub público
+2. Acesse share.streamlit.io
+3. Conecte sua conta GitHub
+4. Selecione o repositório e o arquivo app.py
+5. Clique em "Deploy"
+6. Em 5 minutos seu app estará online gratuitamente
+
+Arquivo requirements.txt deve estar na raiz do projeto.
+Variáveis de ambiente (API keys) configuradas nos Secrets do Streamlit Cloud.
+
+## 12. Ollama — LLMs Gratuitos e Locais
+
+Ollama permite rodar LLMs open-source no seu computador sem custo algum.
+
+Instalação: baixe em ollama.com
+
+Modelos disponíveis:
+- llama3.1 (8B): 4.7GB — boa qualidade, recomendado
+- phi3 (3.8B): 2.2GB — leve, bom para hardware limitado
+- mistral (7B): 4.1GB — rápido e eficiente
+- gemma2 (9B): 5.4GB — boa qualidade da Google
+- codellama: especializado em código
+
+Comandos:
+  ollama pull llama3.1        # baixar modelo
+  ollama run llama3.1         # rodar interativamente
+  ollama list                 # modelos instalados
+  ollama serve                # iniciar servidor API
+
+Usar no LangChain:
+  from langchain_community.llms import Ollama
+  llm = Ollama(model="llama3.1", temperature=0)
+
+## 13. Custos e Alternativas
+
+Gratuito (local):
+- Ollama + LLaMA 3.1: GRÁTIS
+- ChromaDB: GRÁTIS
+- sentence-transformers: GRÁTIS
+- Streamlit local: GRÁTIS
+
+Pago (API):
+- Claude Haiku: ~$0.25/1M tokens (muito barato)
+- GPT-4o-mini: ~$0.15/1M tokens
+- OpenAI Embeddings: $0.02/1M tokens
+
+Para aprender: use Ollama (gratuito)
+Para produção pequena: Claude Haiku (barato e excelente qualidade)
+Para escala: fine-tuning + cache + retrieval otimizado

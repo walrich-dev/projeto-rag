@@ -1,0 +1,272 @@
+DEEP LEARNING E TRANSFORMERS — DO BÁSICO AO AVANÇADO
+======================================================
+
+## 1. O que é Deep Learning?
+
+Deep Learning (Aprendizado Profundo) é uma subárea do Machine Learning que usa redes neurais artificiais com muitas camadas (daí "profundo"). Essas redes aprendem representações hierárquicas dos dados: camadas iniciais capturam padrões simples, camadas profundas capturam padrões complexos.
+
+Por que deep learning funciona melhor que ML clássico?
+- Aprende automaticamente as features (sem feature engineering manual)
+- Escala com mais dados e mais poder computacional
+- Generaliza bem para dados complexos como imagens, áudio e texto
+
+## 2. Redes Neurais Artificiais (ANNs)
+
+Uma rede neural é composta de:
+
+Neurônio (nó):
+- Recebe entradas com pesos (weights)
+- Aplica uma função de ativação
+- Produz uma saída
+
+Camadas:
+- Input layer: recebe os dados brutos
+- Hidden layers: processamento intermediário
+- Output layer: previsão final
+
+Função de ativação:
+- Introduz não-linearidade (fundamental para aprender padrões complexos)
+- ReLU: max(0, x) — mais usada em camadas ocultas
+- Sigmoid: 1/(1+e^-x) — saída entre 0 e 1, usada para classificação binária
+- Softmax: distribui probabilidades entre múltiplas classes
+- Tanh: saída entre -1 e 1
+
+## 3. Como uma Rede Neural Aprende?
+
+### Forward Pass (Propagação para Frente)
+Os dados percorrem a rede da entrada até a saída, gerando uma previsão.
+
+### Função de Custo (Loss Function)
+Mede o erro entre a previsão e o valor real:
+- MSE: regressão
+- Cross-Entropy: classificação
+- Binary Cross-Entropy: classificação binária
+
+### Backpropagation (Propagação para Trás)
+O erro é propagado de volta pela rede, calculando gradientes de cada peso.
+
+### Gradient Descent (Descida do Gradiente)
+Os pesos são atualizados na direção que reduz o erro:
+  novo_peso = peso - taxa_aprendizado * gradiente
+
+Otimizadores populares:
+- SGD (Stochastic Gradient Descent): clássico
+- Adam: adapta a taxa de aprendizado por parâmetro — mais usado hoje
+- RMSprop: bom para RNNs
+
+## 4. Hiperparâmetros de Redes Neurais
+
+- Learning rate (taxa de aprendizado): tamanho do passo no gradiente
+- Batch size: quantos exemplos processar antes de atualizar pesos
+- Epochs: quantas vezes o modelo vê todo o dataset
+- Número de camadas e neurônios: define capacidade do modelo
+- Dropout: regularização que desliga neurônios aleatoriamente durante treino
+
+## 5. Tipos de Redes Neurais
+
+### Redes Densas (Fully Connected / MLP)
+- Cada neurônio conectado a todos da camada anterior
+- Usadas para dados tabulares
+- Parâmetros crescem muito com o tamanho dos dados
+
+### Redes Convolucionais (CNN — Convolutional Neural Networks)
+- Especializadas para imagens e dados com estrutura espacial
+- Usam filtros/kernels que deslizam sobre a imagem
+- Arquiteturas famosas: VGG, ResNet, EfficientNet
+- Aplicações: classificação de imagens, detecção de objetos, segmentação
+
+### Redes Recorrentes (RNN — Recurrent Neural Networks)
+- Processam sequências (texto, áudio, séries temporais)
+- Mantêm um "estado oculto" que age como memória
+- Problemas: dificuldade em lembrar contexto longo (vanishing gradient)
+
+### LSTM e GRU
+- Variantes das RNNs que resolvem o problema do gradiente que desaparece
+- LSTM usa portas (input, forget, output) para controlar o fluxo de informação
+- GRU é mais simples e muitas vezes tão eficaz quanto LSTM
+
+## 6. A Revolução do Transformer (2017)
+
+Publicado no artigo "Attention is All You Need" (Vaswani et al., 2017), o Transformer revolucionou o processamento de linguagem natural e depois tomou conta de áudio, imagens e muito mais.
+
+### Por que o Transformer é revolucionário?
+- Processa sequências inteiras em PARALELO (não sequencialmente como RNNs)
+- O mecanismo de atenção captura dependências de longo alcance
+- Escala extremamente bem com mais dados e mais computação
+
+## 7. Mecanismo de Atenção (Attention Mechanism)
+
+A intuição: ao processar cada palavra, o modelo "presta atenção" nas outras palavras mais relevantes do contexto.
+
+Exemplo: "O banco cobrou juros porque estava endividado"
+- Para entender "banco", o modelo presta mais atenção em "juros" e "endividado"
+- Isso resolve a ambiguidade (banco financeiro, não assento)
+
+### Self-Attention
+Cada token "conversa" com todos os outros tokens da sequência.
+
+### Como funciona matematicamente:
+1. Três matrizes são criadas para cada token:
+   - Q (Query): "o que estou procurando?"
+   - K (Key): "o que eu tenho para oferecer?"
+   - V (Value): "qual informação carrego?"
+
+2. A atenção é calculada:
+   Attention(Q, K, V) = softmax(QK^T / √d_k) × V
+
+3. O resultado pondera os valores V pela similaridade entre Q e K
+
+### Multi-Head Attention
+- Roda múltiplas atenções em paralelo (múltiplas "cabeças")
+- Cada cabeça aprende diferentes tipos de relações
+- Os resultados são concatenados e projetados
+
+## 8. Arquitetura Completa do Transformer
+
+### Encoder (Codificador):
+- Recebe a sequência de entrada
+- Aplica multi-head self-attention
+- Aplica feed-forward layers
+- Produz representações ricas do contexto
+
+### Decoder (Decodificador):
+- Recebe a sequência de saída (deslocada)
+- Aplica masked self-attention (não vê tokens futuros)
+- Aplica cross-attention com o encoder
+- Gera o próximo token
+
+### Modelos Encoder-Only:
+- BERT, RoBERTa, DistilBERT
+- Bons para: classificação, NER, question answering
+- Veem o contexto completo (bidirecional)
+
+### Modelos Decoder-Only:
+- GPT-2, GPT-3, GPT-4, Claude, LLaMA, Mistral
+- Bons para: geração de texto, chatbots, código
+- Geram texto token por token (esquerda para direita)
+
+### Modelos Encoder-Decoder:
+- T5, BART, mT5
+- Bons para: tradução, sumarização, geração condicionada
+
+## 9. Large Language Models (LLMs)
+
+LLMs são Transformers treinados em quantidades massivas de texto.
+
+Características:
+- Bilhões a trilhões de parâmetros
+- Treinados em terabytes de texto da internet, livros, código
+- Capacidade emergente: habilidades que surgem espontaneamente com escala
+- Generalizáveis: uma única tarefa de pré-treino (predizer próximo token) gera modelos capazes de muitas tarefas
+
+Modelos famosos:
+- GPT-4 (OpenAI): ~1 trilhão de parâmetros (estimado)
+- Claude (Anthropic): foco em segurança e alinhamento
+- LLaMA 3 (Meta): open-source, pode rodar localmente
+- Gemini (Google): multimodal por design
+- Mistral: pequeno e eficiente, open-source
+
+## 10. Tokenização
+
+Antes de entrar no modelo, o texto é convertido em tokens.
+
+Token ≠ palavra:
+- "inteligência" pode virar 3 tokens: "intel", "ig", "ência"
+- Um token ≈ 3-4 caracteres em média
+
+Tokenizadores comuns:
+- BPE (Byte Pair Encoding): GPT-2, GPT-4
+- WordPiece: BERT
+- SentencePiece: T5, LLaMA
+
+Por que isso importa?
+- O custo das APIs é em tokens
+- O "contexto" do modelo é limitado em tokens
+- Textos em inglês têm menos tokens que outras línguas
+
+## 11. Temperatura e Amostragem
+
+Temperature (τ):
+- Controla a "criatividade" na geração
+- T = 0: sempre escolhe o token mais provável (determinístico)
+- T = 1: distribuição original
+- T > 1: mais aleatório/criativo
+- T < 1: mais conservador/focado
+
+Top-P (Nucleus Sampling):
+- Seleciona dos tokens que somam probabilidade P
+- Top-P = 0.9: considera apenas os tokens que acumulam 90% da probabilidade
+
+Top-K:
+- Considera apenas os K tokens mais prováveis
+- Top-K = 50: escolhe entre os 50 mais prováveis
+
+## 12. Fine-Tuning de LLMs
+
+Adaptação de um LLM pré-treinado para uma tarefa específica.
+
+### Full Fine-Tuning
+- Ajusta todos os parâmetros do modelo
+- Muito caro computacionalmente
+- Risco de "catastrophic forgetting"
+
+### LoRA (Low-Rank Adaptation)
+- Adiciona matrizes de baixo rank às camadas de atenção
+- Treina menos de 1% dos parâmetros
+- Resultado similar ao fine-tuning completo
+- Pode rodar em GPUs de consumidor
+
+### QLoRA
+- LoRA + quantização 4-bit do modelo base
+- Reduz ainda mais o uso de memória
+- Tornou possível fine-tuning de modelos 70B em uma única GPU
+
+### Instruction Tuning
+- Ajusta o modelo para seguir instruções em formato chat
+- Dataset: pares (instrução, resposta ideal)
+- Base do ChatGPT e outros assistentes
+
+### RLHF (Reinforcement Learning from Human Feedback)
+- Humanos ranqueiam respostas do modelo
+- Um modelo de recompensa aprende a prever preferências humanas
+- O LLM é ajustado para maximizar essa recompensa
+- Essencial para alinhar LLMs a valores humanos
+
+## 13. Embeddings de Texto
+
+Embeddings mapeiam texto para vetores numéricos densos onde similaridade semântica = proximidade geométrica.
+
+Modelos populares:
+- OpenAI text-embedding-3-small/large: alta qualidade, pago
+- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2: gratuito, bom para português
+- all-MiniLM-L6-v2: rápido, apenas inglês
+- nomic-embed-text: open-source, alta qualidade
+
+Aplicações:
+- Busca semântica (não exata)
+- Sistemas de recomendação
+- Detecção de plágio
+- RAG (base vetorial)
+- Clustering de documentos
+
+## 14. Multimodalidade
+
+Modelos que processam múltiplos tipos de dados:
+- Texto + Imagem: GPT-4V, Claude 3, Gemini
+- Texto + Áudio: Whisper (transcrição), GPT-4o
+- Texto + Vídeo: Sora (geração), Gemini 1.5
+
+## 15. Avaliação de LLMs
+
+Benchmarks populares:
+- MMLU: conhecimento geral (57 áreas)
+- HumanEval: geração de código
+- HellaSwag: senso comum
+- TruthfulQA: veracidade das respostas
+- MT-Bench: qualidade em conversas
+
+Métricas automáticas:
+- Perplexidade: quão bem o modelo prevê o texto
+- BLEU: para tradução
+- ROUGE: para sumarização
+- BERTScore: avalia semanticamente usando embeddings

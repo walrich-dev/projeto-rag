@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "pergunta": "Qual é a diferença entre lista e tupla em Python?",
+    "resposta_esperada": "Listas são mutáveis (podem ser alteradas após a criação) enquanto tuplas são imutáveis. Listas usam colchetes [] e tuplas usam parênteses ().",
+    "dificuldade": "fácil",
+    "categoria": "python",
+    "na_base": true
+  },
+  {
+    "id": 2,
+    "pergunta": "O que é overfitting em Machine Learning?",
+    "resposta_esperada": "Overfitting ocorre quando o modelo aprende os dados de treino perfeitamente mas falha em dados novos, ou seja, tem generalização ruim. É como 'decorar' em vez de 'aprender'.",
+    "dificuldade": "fácil",
+    "categoria": "machine_learning",
+    "na_base": true
+  },
+  {
+    "id": 3,
+    "pergunta": "Como funciona o mecanismo de atenção (attention) nos Transformers?",
+    "resposta_esperada": "O mecanismo de atenção usa três matrizes (Q-Query, K-Key, V-Value) para calcular quais partes do texto são mais relevantes para entender cada token. A fórmula é: Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) * V.",
+    "dificuldade": "média",
+    "categoria": "deep_learning",
+    "na_base": true
+  },
+  {
+    "id": 4,
+    "pergunta": "O que é RAG e quais problemas ele resolve?",
+    "resposta_esperada": "RAG (Retrieval-Augmented Generation) combina busca em base de conhecimento com LLMs. Resolve problemas de corte de conhecimento dos modelos, alucinações e necessidade de respostas baseadas em documentos proprietários.",
+    "dificuldade": "média",
+    "categoria": "rag",
+    "na_base": true
+  },
+  {
+    "id": 5,
+    "pergunta": "Quais são os tipos de aprendizado em Machine Learning?",
+    "resposta_esperada": "Os três tipos principais são: Supervisionado (dados rotulados, ex: classificação e regressão), Não Supervisionado (sem rótulos, ex: clustering) e Por Reforço (agente aprende por recompensas).",
+    "dificuldade": "fácil",
+    "categoria": "machine_learning",
+    "na_base": true
+  },
+  {
+    "id": 6,
+    "pergunta": "O que é LoRA e por que é importante para fine-tuning?",
+    "resposta_esperada": "LoRA (Low-Rank Adaptation) é uma técnica que treina apenas matrizes de baixo rank adicionadas às camadas de atenção, treinando menos de 1% dos parâmetros com resultado similar ao fine-tuning completo e muito menor custo computacional.",
+    "dificuldade": "difícil",
+    "categoria": "deep_learning",
+    "na_base": true
+  },
+  {
+    "id": 7,
+    "pergunta": "Qual é a diferença entre chunk_size e chunk_overlap no chunking de documentos?",
+    "resposta_esperada": "chunk_size define o tamanho máximo de cada pedaço do documento (em caracteres). chunk_overlap é a sobreposição entre chunks consecutivos para evitar perder informação na 'costura' entre chunks.",
+    "dificuldade": "média",
+    "categoria": "rag",
+    "na_base": true
+  },
+  {
+    "id": 8,
+    "pergunta": "O que é temperatura (temperature) em LLMs e como ela afeta as respostas?",
+    "resposta_esperada": "Temperature controla a aleatoriedade/criatividade do modelo. T=0 é determinístico (sempre a resposta mais provável), T=0.7 é balanceado, T>1 é mais criativo/aleatório. Para código e fatos usa-se T próximo a 0.",
+    "dificuldade": "média",
+    "categoria": "deep_learning",
+    "na_base": true
+  },
+  {
+    "id": 9,
+    "pergunta": "Como funciona o K-Fold Cross-Validation?",
+    "resposta_esperada": "K-Fold divide os dados em K partes iguais (folds). O modelo é treinado K vezes, cada vez usando um fold diferente como validação. O resultado final é a média das K métricas, sendo mais confiável que uma única divisão treino/teste.",
+    "dificuldade": "média",
+    "categoria": "machine_learning",
+    "na_base": true
+  },
+  {
+    "id": 10,
+    "pergunta": "Qual é a capital da Austrália?",
+    "resposta_esperada": "Não encontrei essa informação na base de conhecimento.",
+    "dificuldade": "fora do escopo",
+    "categoria": "fora_do_escopo",
+    "na_base": false
+  }
+]

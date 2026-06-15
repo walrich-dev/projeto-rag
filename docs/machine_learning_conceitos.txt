@@ -1,0 +1,202 @@
+MACHINE LEARNING — CONCEITOS FUNDAMENTAIS
+==========================================
+
+## 1. O que é Machine Learning?
+
+Machine Learning (Aprendizado de Máquina) é uma subárea da Inteligência Artificial onde sistemas aprendem padrões a partir de dados sem serem explicitamente programados para cada tarefa. Em vez de seguir regras fixas definidas por um programador, o modelo descobre as regras sozinho ao ser exposto a exemplos.
+
+Analogia: assim como uma criança aprende a reconhecer gatos vendo centenas de fotos de gatos (e não-gatos), um modelo de ML aprende o mesmo a partir de dados rotulados.
+
+## 2. Tipos de Aprendizado
+
+### Aprendizado Supervisionado (Supervised Learning)
+- O modelo aprende com dados rotulados (entrada + saída esperada)
+- Objetivo: aprender a mapear entrada → saída
+- Exemplos:
+  - Classificação: email spam ou não spam
+  - Regressão: prever o preço de um imóvel
+- Algoritmos: Regressão Linear, Árvore de Decisão, Random Forest, SVM, Redes Neurais
+
+### Aprendizado Não Supervisionado (Unsupervised Learning)
+- O modelo aprende padrões em dados SEM rótulos
+- Objetivo: encontrar estrutura oculta nos dados
+- Exemplos:
+  - Clustering: agrupar clientes por comportamento
+  - Redução de dimensionalidade: comprimir dados mantendo informação
+- Algoritmos: K-Means, DBSCAN, PCA, Autoencoders
+
+### Aprendizado por Reforço (Reinforcement Learning)
+- Um agente aprende tomando ações em um ambiente
+- Recebe recompensas (positivas/negativas) por suas ações
+- Objetivo: maximizar a recompensa total ao longo do tempo
+- Exemplos: jogos (AlphaGo, xadrez), robótica, carros autônomos
+
+### Aprendizado Semi-supervisionado
+- Combina poucos dados rotulados com muitos não rotulados
+- Útil quando rotular dados é caro ou demorado
+
+## 3. Terminologia Essencial
+
+Feature (característica): variável de entrada usada para treinar o modelo
+  Exemplo: idade, renda, histórico de compras
+
+Label (rótulo): saída esperada que queremos prever
+  Exemplo: "comprou" ou "não comprou"
+
+Dataset: conjunto de dados (treino, validação, teste)
+  - Treino (70-80%): para ajustar os parâmetros do modelo
+  - Validação (10-15%): para ajustar hiperparâmetros
+  - Teste (10-15%): avaliação final, nunca visto durante treino
+
+Overfitting: modelo aprende os dados de treino perfeitamente, mas falha em dados novos (generalização ruim). É "decorar" em vez de "aprender".
+
+Underfitting: modelo muito simples que não captura os padrões dos dados. Performance ruim tanto no treino quanto no teste.
+
+Bias-Variance Tradeoff: equilíbrio entre simplicidade (alto bias) e complexidade (alta variância).
+
+## 4. Algoritmos Clássicos
+
+### Regressão Linear
+- Objetivo: prever um valor numérico contínuo
+- Encontra a linha (ou hiperplano) que melhor se ajusta aos dados
+- Fórmula: y = ax + b
+- Métrica: MSE (Mean Squared Error), RMSE, R²
+
+### Regressão Logística
+- Apesar do nome, é um algoritmo de CLASSIFICAÇÃO
+- Prediz a probabilidade de pertencer a uma classe
+- Saída entre 0 e 1 (usa função sigmoid)
+- Usado para: detecção de spam, diagnóstico médico binário
+
+### Árvore de Decisão (Decision Tree)
+- Estrutura de if/else aprendida automaticamente
+- Fácil de interpretar e visualizar
+- Problema: tende a overfitting se muito profunda
+
+### Random Forest
+- Conjunto de múltiplas árvores de decisão
+- Cada árvore vota e a maioria vence
+- Mais robusto que uma única árvore
+- Funciona bem sem muito ajuste de hiperparâmetros
+
+### Support Vector Machine (SVM)
+- Encontra o hiperplano que maximiza a margem entre classes
+- Eficaz em espaços de alta dimensionalidade
+- Bom com poucos dados
+
+### K-Nearest Neighbors (KNN)
+- Classifica com base nos K vizinhos mais próximos
+- Simples mas lento com muitos dados
+- Não aprende um modelo: guarda todos os dados
+
+### K-Means Clustering
+- Agrupa dados em K clusters
+- Iterativamente ajusta os centróides
+- Parâmetro K deve ser definido manualmente
+
+## 5. Métricas de Avaliação
+
+### Para Classificação:
+- Acurácia: % de previsões corretas (ruim com dados desbalanceados)
+- Precisão: dos que o modelo disse "positivo", quantos realmente são?
+- Recall: dos que realmente são positivos, quantos o modelo encontrou?
+- F1-Score: média harmônica entre precisão e recall
+- AUC-ROC: área sob a curva ROC (quão bem o modelo separa as classes)
+
+### Para Regressão:
+- MSE (Mean Squared Error): média dos erros ao quadrado
+- RMSE: raiz do MSE (mesma unidade que os dados)
+- MAE (Mean Absolute Error): média dos erros absolutos
+- R²: quanto da variância é explicada pelo modelo (0 a 1)
+
+## 6. Pré-processamento de Dados
+
+Etapas essenciais antes de treinar qualquer modelo:
+
+### Limpeza
+- Tratar valores ausentes (NaN): remover, imputar com média/moda
+- Remover duplicatas
+- Corrigir erros de digitação e outliers
+
+### Normalização e Padronização
+- Normalização (0 a 1): (x - min) / (max - min)
+  Usado quando: distribuição não é normal, limites conhecidos
+- Padronização (z-score): (x - média) / desvio_padrão
+  Usado quando: distribuição aproximadamente normal
+
+### Codificação de Variáveis Categóricas
+- Label Encoding: transforma categorias em números (0, 1, 2...)
+- One-Hot Encoding: cria uma coluna binária para cada categoria
+
+### Feature Engineering
+- Criar novas features a partir das existentes
+- Exemplo: de "data_nascimento" extrair "idade", "geração"
+
+## 7. Validação Cruzada (Cross-Validation)
+
+K-Fold Cross-Validation:
+- Divide os dados em K partes iguais (folds)
+- Treina K vezes, cada vez usando um fold diferente como validação
+- Resultado final: média das K métricas
+- Mais confiável que uma única divisão treino/teste
+
+## 8. Hiperparâmetros vs Parâmetros
+
+Parâmetros: aprendidos automaticamente durante o treino
+  Exemplos: pesos de uma rede neural, coeficientes da regressão
+
+Hiperparâmetros: definidos pelo desenvolvedor ANTES do treino
+  Exemplos: taxa de aprendizado, número de árvores no Random Forest, K no KNN
+
+Técnicas para ajustar hiperparâmetros:
+- Grid Search: testa todas as combinações
+- Random Search: testa combinações aleatórias
+- Bayesian Optimization: usa resultados anteriores para guiar a busca
+
+## 9. Pipeline com scikit-learn
+
+  from sklearn.pipeline import Pipeline
+  from sklearn.preprocessing import StandardScaler
+  from sklearn.ensemble import RandomForestClassifier
+
+  pipeline = Pipeline([
+      ('scaler', StandardScaler()),
+      ('modelo', RandomForestClassifier(n_estimators=100))
+  ])
+
+  pipeline.fit(X_train, y_train)
+  predicoes = pipeline.predict(X_test)
+
+## 10. Dados Desbalanceados
+
+Problema: uma classe tem muito mais amostras que a outra
+Exemplo: 95% de transações legítimas, 5% de fraudes
+
+Soluções:
+- Oversampling: gerar amostras sintéticas da classe minoritária (SMOTE)
+- Undersampling: reduzir amostras da classe majoritária
+- Ajustar pesos: class_weight='balanced' no scikit-learn
+- Usar métricas adequadas: F1, AUC-ROC em vez de acurácia
+
+## 11. Fluxo Completo de um Projeto de ML
+
+1. Definir o problema e a métrica de sucesso
+2. Coletar e explorar os dados (EDA — Exploratory Data Analysis)
+3. Pré-processar e limpar os dados
+4. Feature engineering
+5. Dividir em treino/validação/teste
+6. Treinar e comparar modelos
+7. Ajustar hiperparâmetros
+8. Avaliar no conjunto de teste
+9. Colocar em produção (deploy)
+10. Monitorar e retreinar quando necessário
+
+## 12. Ferramentas Principais em Python para ML
+
+scikit-learn: algoritmos clássicos, pré-processamento, validação
+pandas: manipulação de dados
+numpy: álgebra linear e operações vetoriais
+matplotlib/seaborn: visualização
+optuna: otimização de hiperparâmetros
+mlflow: rastreamento de experimentos
+joblib: salvar e carregar modelos
