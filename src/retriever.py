@@ -5,7 +5,7 @@ Expõe funções para criar retrievers e inspecionar resultados,
 separando a lógica de busca da lógica de geração (chain.py).
 """
 
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 
 def criar_retriever(vectorstore: Chroma, k: int = 4):
