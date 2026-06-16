@@ -57,29 +57,29 @@ def inicializar():
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.title("🤖 Assistente RAG")
+    st.title("Assistente RAG")
     st.markdown("**Tema:** Python & Inteligência Artificial")
     st.divider()
 
-    st.markdown("### 📚 Base de Conhecimento")
+    st.markdown("### Base de Conhecimento")
     st.markdown(
         """
-        - 🐍 Python Fundamentos
-        - 🤖 Machine Learning
-        - 🧠 Deep Learning & Transformers
-        - 🔗 LangChain & RAG
+        -  Python Fundamentos
+        -  Machine Learning
+        - Deep Learning & Transformers
+        -  LangChain & RAG
         """
     )
     st.divider()
 
-    st.markdown("### ⚙️ Ações")
-    if st.button("🔄 Reindexar documentos", use_container_width=True):
+    st.markdown("###  Ações")
+    if st.button("Reindexar documentos", use_container_width=True):
         st.cache_resource.clear()
         if "historico" in st.session_state:
             del st.session_state["historico"]
         st.rerun()
 
-    if st.button("🗑️ Limpar conversa", use_container_width=True):
+    if st.button("Limpar conversa", use_container_width=True):
         st.session_state.historico = []
         st.rerun()
 
@@ -92,7 +92,7 @@ with st.sidebar:
 try:
     chain = inicializar()
 except Exception as err:
-    st.error(f"❌ Erro ao inicializar o sistema:\n\n{err}")
+    st.error(f"Erro ao inicializar o sistema:\n\n{err}")
     st.info(
         "Verifique se o Ollama está rodando (`ollama serve`) "
         "ou configure outro provider no arquivo .env"
@@ -101,7 +101,7 @@ except Exception as err:
 
 
 # ── Cabeçalho principal ──────────────────────────────────────────────────────
-st.title("🤖 Assistente de Python & IA")
+st.title("Assistente de Python & IA")
 st.caption(
     "Powered by **RAG** (Retrieval-Augmented Generation) · "
     "Respostas baseadas exclusivamente nos documentos indexados"
@@ -118,7 +118,7 @@ for msg in st.session_state.historico:
         st.markdown(msg["content"])
         if msg.get("fontes"):
             st.markdown(
-                f'<span class="fonte-badge">📚 Fontes: {msg["fontes"]}</span>',
+                f'<span class="fonte-badge"> Fontes: {msg["fontes"]}</span>',
                 unsafe_allow_html=True,
             )
 
@@ -148,7 +148,7 @@ if pergunta := st.chat_input("Faça sua pergunta sobre Python ou IA..."):
 
         st.markdown(resposta)
         st.markdown(
-            f'<span class="fonte-badge">📚 Fontes: {fontes_str} · ⏱ {latencia:.1f}s</span>',
+            f'<span class="fonte-badge"> Fontes: {fontes_str} · ⏱ {latencia:.1f}s</span>',
             unsafe_allow_html=True,
         )
 
